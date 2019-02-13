@@ -1,6 +1,6 @@
 <template>
-  <div>
-  <el-row :gutter="20">
+  <div >
+  <el-row id="wish" :gutter="20" v-loading>
     <el-col :span="6"><div class="grid-content bg-purple">
       <div class="block" >
         <el-date-picker
@@ -12,38 +12,6 @@
           :picker-options="pickerOptions1">
         </el-date-picker>
       </div>
-    </div></el-col>
-    <el-col :span="4"><div class="grid-content bg-purple">
-      <el-select
-        v-model="companyList"
-        multiple
-        filterable
-        collapse-tags
-        style="margin-left: 20px;"
-        placeholder="揽收仓">
-        <el-option
-          v-for="item in companyOptions"
-          :key="item.companyCode"
-          :label="item.companyName"
-          :value="item.companyCode">
-        </el-option>
-      </el-select>
-    </div></el-col>
-    <el-col :span="3"><div class="grid-content bg-purple">
-      <el-select
-        v-model="productType"
-        collapse-tags
-        filterable
-        style="margin-left: 20px;"
-        value="1"
-        placeholder="产品类型">
-        <el-option
-          v-for="item in productTypeOptions"
-          :key="item.code"
-          :label="item.name"
-          :value="item.code">
-        </el-option>
-      </el-select>
     </div></el-col>
     <el-col :span="7"><div class="grid-content bg-purple">
       <el-select
@@ -63,7 +31,7 @@
       </el-select>
     </div></el-col>
     <el-col :span="2"><div class="grid-content bg-purple">
-      <el-button type="primary" @click="exportSheet()">导出</el-button>
+      <el-button  type="primary" @click="exportSheet()"  >导出</el-button>
     </div></el-col>
     <el-col :span="2"><div class="grid-content bg-purple">
       <el-button type="primary" @click="reset()">重置</el-button>
@@ -101,7 +69,7 @@
 
 <script>
 import axios from 'axios'
-axios.defaults.baseURL = '/api'
+import fileDownload from 'js-file-download'
 export default {
   name: 'sheetExportComponent',
   data () {
@@ -133,69 +101,54 @@ export default {
       },
       value1: '',
       time: '',
-      productTypeOptions: [{
-        code: '',
-        name: ''
-      }],
-      companyOptions: [{companyCode: '', companyName: ''}],
       productOptions: [{productCode: '', productName: ''}],
-      productType: '1',
-      companyList: [],
       productList: [],
-      tableData2: []
+      tableData2: [],
+      loading: false
     }
   },
   mounted () {
-    axios.get('/companyList').then(response => {
-      this.companyOptions = response.data
-    }).catch(error => { console.log(error) })
-    axios.get('/productTypeList').then(response => {
-      this.productTypeOptions = response.data
-    }).catch(error => { console.log(error) })
+    axios.defaults.baseURL = '/api'
     axios.get('/productList').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   },
   methods: {
     reset () {
-      this.companyList = []
       this.productList = []
-      this.productType = {}
       this.time = ''
     },
     exportSheet () {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+        target: document.querySelector('.wish')
+      })
+      axios.defaults.baseURL = '/wish'
       let postEntity = {
-        companyCodes: this.companyList,
-        productCodes: this.productList.length === 0 ? null : this.productList,
-        type: this.productType,
-        effectiveTime: this.time,
-        isLine: this.productType === '1' ? 0 : 1
+        data: {
+          productCodes: this.productList.length === 0 ? null : this.productList,
+          effectTime: this.time
+        }
       }
-      // axios.post('/export', postEntity, {
-      //   responseType: 'blob'
-      // }).then(function (response) {
-      //   this.download(response)
+      axios.post('/wishpricesheet/getQuotation', postEntity, {
+        responseType: 'arraybuffer'
+      }).then(function (response) {
+        let fileName = window.URL.createObjectURL(new Blob([response])).replace('blob:http://localhost:8077/', '') + '.zip'
+        fileDownload(response.data, fileName)
+        loading.close()
+      }).catch(error => {
+        loading.close()
+        console.log(error)
+      })
+      // let _this = this
+      // axios.post('/export', postEntity).then(function (response) {
+      //   _this.tableData2 = response.data
       // }).catch(error => {
       //   console.log(error)
       // })
-      let _this = this
-      axios.post('/export', postEntity).then(function (response) {
-        _this.tableData2 = response.data
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    download (data) {
-      if (!data) {
-        return
-      }
-      let url = window.URL.createObjectURL(new Blob([data]))
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.href = url
-      link.setAttribute('download', '报价单.zip')
-      document.body.appendChild(link)
-      link.click()
     },
     tableRowClassName ({row, rowIndex}) {
       if (rowIndex === 1) {

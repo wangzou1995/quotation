@@ -48,6 +48,7 @@
 <script>
 import Hello from './components/Hello'
 import sheetExportComponent from './components/sheetExportComponent'
+import WishSheetExportComponent from './components/WishSheetExportComponent'
 let tabNames = []
 const components = [{
   name: '销售报价单导出',
@@ -57,7 +58,7 @@ const components = [{
   componentName: Hello
 }, {
   name: 'WISH价卡导出',
-  componentName: Hello
+  componentName: WishSheetExportComponent
 }
 ]
 export default {

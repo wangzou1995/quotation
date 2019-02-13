@@ -16,7 +16,9 @@
   "dependencies": {
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "element-ui": "^2.5.4"
+    "element-ui": "^2.5.4",
+    "axios": "^0.18.0",
+    "js-file-download": "^0.4.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
