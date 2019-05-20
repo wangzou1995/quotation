@@ -26,7 +26,8 @@
           v-for="item in productOptions"
           :key="item.productCode"
           :label="item.productName"
-          :value="item.productCode">
+          :value="item.productCode"
+          >
         </el-option>
       </el-select>
     </div></el-col>
@@ -70,14 +71,17 @@
 <script>
 import axios from 'axios'
 import fileDownload from 'js-file-download'
+let isPro = process.env.NODE_ENV === 'production'
+if (isPro) {
+  axios.defaults.baseURL = 'http://124.251.104.88:8079'
+} else {
+  axios.defaults.baseURL = '/api'
+}
 export default {
   name: 'sheetExportComponent',
   data () {
     return {
       pickerOptions1: {
-        disabledDate (time) {
-          return time.getTime() > Date.now()
-        },
         shortcuts: [{
           text: '今天',
           onClick (picker) {
@@ -100,7 +104,7 @@ export default {
         }]
       },
       value1: '',
-      time: '',
+      time: null,
       productOptions: [{productCode: '', productName: ''}],
       productList: [],
       tableData2: [],
@@ -108,47 +112,57 @@ export default {
     }
   },
   mounted () {
-    axios.defaults.baseURL = '/api'
-    axios.get('/productList').then(response => {
+    axios.get('/productList/55').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   },
   methods: {
     reset () {
-      this.productList = []
-      this.time = ''
+      this.productList = null
+      this.time = null
     },
     exportSheet () {
-      const loading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)',
-        target: document.querySelector('.wish')
-      })
-      axios.defaults.baseURL = '/wish'
       let postEntity = {
         data: {
           productCodes: this.productList.length === 0 ? null : this.productList,
           effectTime: this.time
         }
       }
-      axios.post('/wishpricesheet/getQuotation', postEntity, {
-        responseType: 'arraybuffer'
-      }).then(function (response) {
-        let fileName = window.URL.createObjectURL(new Blob([response])).replace('blob:http://localhost:8077/', '') + '.zip'
-        fileDownload(response.data, fileName)
-        loading.close()
-      }).catch(error => {
-        loading.close()
-        console.log(error)
-      })
-      // let _this = this
-      // axios.post('/export', postEntity).then(function (response) {
-      //   _this.tableData2 = response.data
-      // }).catch(error => {
-      //   console.log(error)
-      // })
+      if (postEntity.data.effectTime === null || postEntity.data.productCodes === null) {
+        this.$alert('请选择条件！', '警告', {
+          confirmButtonText: '确定'
+        })
+      } else {
+        if (isPro) {
+          axios.defaults.baseURL = 'http://124.251.104.88:8075'
+        } else {
+          axios.defaults.baseURL = '/wish'
+        }
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.wish')
+        })
+
+        axios.post('/wishpricesheet/getQuotation', postEntity, {
+          responseType: 'arraybuffer'
+        }).then(function (response) {
+          let fileName = 'download.zip'
+          fileDownload(response.data, fileName)
+          loading.close()
+        }).catch(error => {
+          loading.close()
+          console.log(error)
+        })
+        // let _this = this
+        // axios.post('/export', postEntity).then(function (response) {
+        //   _this.tableData2 = response.data
+        // }).catch(error => {
+        //   console.log(error)
+        // })
+      }
     },
     tableRowClassName ({row, rowIndex}) {
       if (rowIndex === 1) {
