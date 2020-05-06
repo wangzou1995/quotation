@@ -21,7 +21,6 @@
         collapse-tags
         style="margin-left: 20px;"
         placeholder="揽收仓"
-        multiple-limit= 5
       >
         <el-option
           v-for="item in companyOptions"
@@ -40,7 +39,7 @@
           collapse-tags
           filterable
           style="margin-left: 20px;"
-          value="1"
+          value="6"
           placeholder="产品类型">
           <el-option
             v-for="item in productTypeOptions"
@@ -114,12 +113,6 @@
 <script>
 import axios from 'axios'
 import fileDownload from 'js-file-download'
-let isPro = process.env.NODE_ENV === 'production'
-if (isPro) {
-  axios.defaults.baseURL = 'http://124.251.104.88:8079'
-} else {
-  axios.defaults.baseURL = '/api'
-}
 export default {
   name: 'sheetExportComponent',
   data () {
@@ -162,13 +155,13 @@ export default {
     }
   },
   mounted () {
-    axios.get('/companyList').then(response => {
+    axios.get('/api/companyList').then(response => {
       this.companyOptions = response.data
     }).catch(error => { console.log(error) })
-    axios.get('/productTypeList').then(response => {
+    axios.get('/api/productTypeList').then(response => {
       this.productTypeOptions = response.data
     }).catch(error => { console.log(error) })
-    axios.get('/productList/0').then(response => {
+    axios.get('/api/productList/0').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   },
@@ -185,7 +178,7 @@ export default {
         productCodes: this.productList.length === 0 ? null : this.productList,
         type: this.productType,
         effectiveTime: this.time,
-        isLine: this.productType === '1' ? 1 : 0,
+        isLine: this.productType === '6' ? 1 : 0,
         discount: this.discount
       }
       if (postEntity.companyCodes.length === 0 || postEntity.effectiveTime === null) {
@@ -200,7 +193,7 @@ export default {
           background: 'rgba(0, 0, 0, 0.7)',
           target: document.querySelector('.wish')
         })
-        axios.post('/download', postEntity, {
+        axios.post('/api/download', postEntity, {
           responseType: 'arraybuffer'
         }).then(function (response) {
           let fileName = 'download.zip'

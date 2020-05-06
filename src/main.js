@@ -8,7 +8,7 @@ import router from './router'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-
+Vue.prototype.$message = ElementUI.Message
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

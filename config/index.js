@@ -6,7 +6,6 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -18,13 +17,24 @@ module.exports = {
           '^/api': ''//这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
         }
       },
+      '/cpc': {
+        target: 'http://172.16.205.78:8080',//设置你调用的接口域名和端口号 别忘了加http
+        changeOrigin: true,
+      },
       '/wish': {
           target: 'http://56.56.56.24:8075',
           changeOrigin: true,
           pathRewrite: {
             '^/wish': ''
           }
+        },
+      '/oss': {
+        target: 'http://123.123.128.238:8083',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/oss': ''
         }
+      }
     },
 
     // Various Dev Server settings
@@ -65,7 +75,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/quotation',
+    assetsPublicPath: './',
     /**
      * Source Maps
      */

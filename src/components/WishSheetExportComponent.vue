@@ -71,12 +71,6 @@
 <script>
 import axios from 'axios'
 import fileDownload from 'js-file-download'
-let isPro = process.env.NODE_ENV === 'production'
-if (isPro) {
-  axios.defaults.baseURL = 'http://124.251.104.88:8079'
-} else {
-  axios.defaults.baseURL = '/api'
-}
 export default {
   name: 'sheetExportComponent',
   data () {
@@ -112,7 +106,7 @@ export default {
     }
   },
   mounted () {
-    axios.get('/productList/55').then(response => {
+    axios.get('/api/productList/55').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   },
@@ -133,11 +127,6 @@ export default {
           confirmButtonText: '确定'
         })
       } else {
-        if (isPro) {
-          axios.defaults.baseURL = 'http://124.251.104.88:8075'
-        } else {
-          axios.defaults.baseURL = '/wish'
-        }
         const loading = this.$loading({
           lock: true,
           text: 'Loading',
@@ -146,7 +135,7 @@ export default {
           target: document.querySelector('.wish')
         })
 
-        axios.post('/wishpricesheet/getQuotation', postEntity, {
+        axios.post('/wish/wishpricesheet/getQuotation', postEntity, {
           responseType: 'arraybuffer'
         }).then(function (response) {
           let fileName = 'download.zip'

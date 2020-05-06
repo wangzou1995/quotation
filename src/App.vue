@@ -18,12 +18,15 @@
             <el-menu-item-group>
               <el-menu-item index="1-1" @click="addTab('销售报价单导出')">销售报价单导出</el-menu-item>
               <el-menu-item index="1-2" @click="addTab('销售报价单预览')">销售报价单预览</el-menu-item>
+              <el-menu-item index="1-3" @click="addTab('定制价卡')">八国五线报价单导出</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-menu"></i>价卡管理</template>
             <el-menu-item-group>
-              <el-menu-item index="2-1" @click="addTab('WISH价卡导出')">WISH价卡导出</el-menu-item>
+<!--              <el-menu-item index="2-1" @click="addTab('WISH价卡导出')">WISH价卡导出</el-menu-item>-->
+              <el-menu-item index="2-2" @click="addTab('WISH价卡导出')">WISH价卡导出</el-menu-item>
+              <el-menu-item index="2-3" @click="addTab('焦点价卡导出')">焦点价卡导出</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
@@ -49,6 +52,9 @@
 import Hello from './components/Hello'
 import sheetExportComponent from './components/sheetExportComponent'
 import WishSheetExportComponent from './components/WishSheetExportComponent'
+import CustomCard from './components/CustomCard'
+import WishCard from './components/WishCard'
+import DSCard from './components/DSCard'
 let tabNames = []
 const components = [{
   name: '销售报价单导出',
@@ -57,8 +63,17 @@ const components = [{
   name: '销售报价单预览',
   componentName: Hello
 }, {
-  name: 'WISH价卡导出',
+  name: 'WISH价卡导出OLD',
   componentName: WishSheetExportComponent
+}, {
+  name: '定制价卡',
+  componentName: CustomCard
+}, {
+  name: 'WISH价卡导出',
+  componentName: WishCard
+}, {
+  name: '焦点价卡导出',
+  componentName: DSCard
 }
 ]
 export default {
