@@ -155,13 +155,13 @@ export default {
     }
   },
   mounted () {
-    axios.get('/api/companyList').then(response => {
+    axios.get('/sheet/api/companyList').then(response => {
       this.companyOptions = response.data
     }).catch(error => { console.log(error) })
-    axios.get('/api/productTypeList').then(response => {
+    axios.get('/sheet/api/productTypeList').then(response => {
       this.productTypeOptions = response.data
     }).catch(error => { console.log(error) })
-    axios.get('/api/productList/0').then(response => {
+    axios.get('/sheet/api/productList/0').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   },
@@ -193,7 +193,7 @@ export default {
           background: 'rgba(0, 0, 0, 0.7)',
           target: document.querySelector('.wish')
         })
-        axios.post('/api/download', postEntity, {
+        axios.post('/sheet/api/download', postEntity, {
           responseType: 'arraybuffer'
         }).then(function (response) {
           let fileName = 'download.zip'

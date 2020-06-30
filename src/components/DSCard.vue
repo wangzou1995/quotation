@@ -66,7 +66,7 @@ export default {
             target: document.querySelector('.wish')
           })
           let temp = JSON.parse(JSON.stringify(this.formCustom))
-          axios.post('/cpc/dsCard/download', temp, {
+          axios.post('/sheet/cpc/dsCard/download', temp, {
             responseType: 'arraybuffer'
           }).then(function (response) {
             let fileName = 'download.zip'
@@ -88,7 +88,7 @@ export default {
     }
   },
   created () {
-    axios.get('/cpc/dsCard/allProduct').then(response => {
+    axios.get('/sheet/cpc/dsCard/allProduct').then(response => {
       this.productOptions = response.data.data
     }).catch(error => { console.log(error) })
   }

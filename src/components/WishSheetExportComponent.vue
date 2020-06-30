@@ -106,7 +106,7 @@ export default {
     }
   },
   mounted () {
-    axios.get('/api/productList/55').then(response => {
+    axios.get('/sheet/api/productList/55').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   },
@@ -135,7 +135,7 @@ export default {
           target: document.querySelector('.wish')
         })
 
-        axios.post('/wish/wishpricesheet/getQuotation', postEntity, {
+        axios.post('/sheet/wish/wishpricesheet/getQuotation', postEntity, {
           responseType: 'arraybuffer'
         }).then(function (response) {
           let fileName = 'download.zip'

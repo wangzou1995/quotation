@@ -98,7 +98,7 @@ export default {
             const index = temp.companyCodes.indexOf('ALL_SELECT')
             temp.companyCodes.splice(index, 1)
           }
-          axios.post('/cpc/download', temp, {
+          axios.post('/sheet/cpc/download', temp, {
             responseType: 'arraybuffer'
           }).then(function (response) {
             let fileName = 'download.zip'
@@ -120,7 +120,7 @@ export default {
     }
   },
   created () {
-    axios.get('/api/companyList').then(response => {
+    axios.get('/sheet/api/companyList').then(response => {
       let temp = [{'companyCode': 'ALL_SELECT', 'companyName': '全公司'}]
       temp.push(...response.data)
       console.log(temp)

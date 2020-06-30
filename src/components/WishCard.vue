@@ -58,7 +58,7 @@ export default {
             target: document.querySelector('.wish')
           })
           let temp = JSON.parse(JSON.stringify(this.formCustom))
-          axios.post('/cpc/wishCard/download', temp, {
+          axios.post('/sheet/cpc/wishCard/download', temp, {
             responseType: 'arraybuffer'
           }).then(function (response) {
             let fileName = 'download.zip'
@@ -80,7 +80,7 @@ export default {
     }
   },
   created () {
-    axios.get('/api/productList/55').then(response => {
+    axios.get('/sheet/api/productList/55').then(response => {
       this.productOptions = response.data
     }).catch(error => { console.log(error) })
   }
